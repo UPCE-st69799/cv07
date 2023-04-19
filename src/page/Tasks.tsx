@@ -1,28 +1,21 @@
-import TaskCard from "../component/TaskCard";
-import {Task, tasks} from "../data/init-data";
-import {useState} from "react";
+import {tasks} from "../data/init-data";
+import React, {useEffect, useState} from "react";
+import TaskList from "../component/TaskList";
 
-const Tasks = () => {
+interface Props {
+}
 
-    const[taskList, setTaskList] = useState<Array<Task>>(tasks);
+const Tasks = ({} : Props) => {
+    useEffect(() => {
+        fetchData();
+    }, []);
 
-    const taskDoneHandle = (task : Task) => {
-        console.log("Changing state of reactive variable");
-
-        setTaskList([ ...taskList] );
+    const fetchData = () => {
+        const result = fetch("http://localhost:9000/api/v1/task");
+        console.log(result);
     }
 
-    return <div>
-        <h1>Aktuální tasky</h1>
-        {taskList.filter(t => !t.done).map(t =>
-            <TaskCard key={t.id} task={t} onTaskDone={taskDoneHandle}/>
-        )}
-
-        <h1>Splněné tasky</h1>
-        {taskList.filter(t => t.done).map(t =>
-            <TaskCard key={t.id} task={t} onTaskDone={taskDoneHandle}/>
-        )}
-    </div>
+    return <TaskList tasks={tasks} />
 }
 
 export default Tasks;
