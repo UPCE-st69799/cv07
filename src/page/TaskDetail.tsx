@@ -1,31 +1,38 @@
+import {useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {Task} from "../data/init-data";
 import TaskCard from "../component/TaskCard";
-import {useParams} from "react-router";
 
 const TaskDetail = () => {
     const {id} = useParams<'id'>();
-
-    const [loading, setLoading] = useState<boolean>(true)
-    const [data, setData] = useState<Task | undefined>();
+    const [data, setData] = useState<Task | null | undefined>();
+    const [error, setError] = useState<string | undefined>();
 
     useEffect(() => {
-        debugger;
-        fetchData(id!!);
+        fetchData();
     }, []);
 
-    const fetchData = async (id: number | string) => {
+    const fetchData = async () => {
         const backendUrl = import.meta.env.VITE_BACKEND_URL;
-
         const result = await fetch(`${backendUrl}/task/${id}`);
-        setData(await (result.json()));
-        setLoading(false);
+
+        if(result.ok) {
+            const parsed = await result.json() as Task;
+
+            setData({...parsed, done: false});
+        } else {
+            setError(await result.json());
+        }
     };
 
-    return <div>
-        {loading && <div>Loading ...</div>}
-        {data && <TaskCard task={data} onTaskDone={() => {}} />}
-    </div>
-};
+    const taskDoneHandle = (task : Task) => {
+        setData({...task})
+    };
+
+    return <>
+        {error}
+        {data && <TaskCard task={data} onTaskDone={taskDoneHandle} />}
+    </>
+}
 
 export default TaskDetail;

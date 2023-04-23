@@ -1,17 +1,17 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import './Header.css';
-import {useSelector} from "react-redux";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {setLogin} from "../../features/login/loginSlice";
-import {useAppDispatch} from "../../features/hook";
-import {RootState} from "../../features/store";
 
 const Header = () => {
-    const isLoggedIn = useSelector((state: RootState) => state.login.value);
+    // TODO: 2.	Upravte zdrojový kód tak aby po stisknutí tlačítka „Přihlásit se“ v komponentně Header.tsx se aktualizoval stav i v komponentě Task.tsx a zobrazil tasky z backendu.
+
+    const isLoggedIn = useAppSelector((state) => state.login.value)
     const dispatch = useAppDispatch();
 
     useEffect(()=> {
         console.log(`State changed in ${Header.name}: ${isLoggedIn}`);
-    }, [isLoggedIn]);
+    }, [isLoggedIn])
 
     const clickHandle = (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
